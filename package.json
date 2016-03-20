@@ -1,0 +1,9 @@
+{
+  "main": "./html/main.html",
+  "name": "Lin Configuration tool",
+  "window":{
+    "toolbar": true,
+    "width": 800,
+    "height": 500
+  }
+}
