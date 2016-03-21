@@ -19,18 +19,125 @@ fs.readFile('./LIN_configuration.txt', 'utf-8', function (error, contents) {
 
 
 */
+/* Only 1 master multiple slaves*/
+var nodes_obj = [	{
+		node_name: '',
+		time_base: '',
+		jitter: ''
+	}];
 
+/**/
+var signals_obj = [	{
+			signal_name: '',
+			signal_size: '',
+			init_value: '',
+			published_by:'',
+			suscribed_by:''
+}];
 
+var frames_obj = [{
+		frame_name: '',
+		frame_id:'',
+		published_by:'',
+		frame_size:'', //optional
+		signals_frms:{
+			signal_name: '',
+			signal_offset:''
+		}
+	}];
 
+var sched_table_obj ={
+		table_name:'',
+		frames:[{
+			frame_name:'',
+			frame_time:''
+	}]
+};
 
+var states = {
+	'initial': 0,
+	'nodes': 1,
+	'signals': 2,
+	'frames': 3,
+	'sched_tables': 4,
+	'unk': 5,
+}
+/* 0: no abierto 1: abirto 2: cerrado */
+var nodes_bracket; = 0;
+var signals_bracket; = 0;
+var frames_bracket; = 0;
+var sched_bracket; = 0;
+
+function parseNodes() {
+
+}
+
+function parseSignals() {
+
+}
+function parseFrames() {
+
+}
+function parseScheduleTable() {
+
+}
 
 function parseCfgFile(file_raw) {
 		var reader = new FileReader();
 		// reader.onload = function (progress) {
 			var lines = file_raw.split('\n')
+			var line_string;
+			var state = states['initial'];
 			for(var line = 0; line < lines.length; line++)
 			{
-				console.log("Lnum:" + line + "-> " + lines[line]);
+				line_string = lines[line].replace(/\s/g,''); //removing whitespaces
+				//console.log("Lnum:" + line + "-> " + line_string);
+				if(line_string === '') continue;
+				if(line_string.match(/nodes/i)){
+					console.log("begining of nodes");
+					state = states['nodes'];
+				}
+				if(line_string.match(/signals/i)){
+					console.log("begining of signals");
+					state = states['signals'];
+				}
+
+				if(line_string.match(/frames/i)){
+					console.log("begining of frames");
+					state = states['frames'];
+				}
+
+				if(line_string.match(/schedule_tables/i)){
+					console.log("begining of sched_tables");
+					state = states['sched_tables'];
+				}
+				switch (state) { //'Master: MST, 5 ms, 0.1 ms;'.match(/:(.*)$/ig);
+					case states['nodes']:
+						console.log('state nodes');
+						if(nodes_bracket === 1){
+							if(line_string.match(/master/i)){
+								sub_mstr = line_string.match
+							}
+						}
+						if(nodes_bracket === 0 && line_string === '{'){
+							nodes_bracket = 1;
+						}
+						break;
+					case states['signals']:
+						console.log('state signals');
+						break;
+					case states['frames']:
+						console.log('state frames');
+						break;
+					case states['sched_tables']:
+						console.log('state sched_tables');
+						break;
+					case states['initial']:
+						console.log('state ink');
+						break;
+					default:
+
+				}
 			}
 		// }
 

@@ -1,6 +1,7 @@
 # nwjs_lin_cfg
 
 ## Supuestos:
+  * El orden en que se declaren no debe de importar
 	* Existen lineas que solo contienen las palabras {nodes, signals, frames, schedule_tables}
 	y en esa liena solo estan esas palabras y caracteres en blnco ie {tabs, espacios y lf cr}
 	* En seguida de la linea descrita arriba hay un bracket que abre - \{
@@ -32,3 +33,32 @@ Correr regexp para poner cada {} en una sola linea
  -signal
  -frames
  -schedule_tables
+
+
+regex log
+```javascript
+'Master: MST, 5 ms, 0.1 ms;'.match(/:(.*)$/ig); => [": MST, 5 ms, 0.1 ms;"]
+'Master:MST,5ms,0.1ms;'.match(/:(.*)$/ig)[0].split(',');
+[":MST", "5ms", "0.1ms;"]
+
+// nombre del master
+'Master:MST,5ms,0.1ms;'.match(/:(.*)$/ig)[0].split(',')[0].match(/\w+/)
+["MST"]
+
+
+'Slaves: SLV'.match(/:(.*)$/ig)[0].split(',')[0].match(/\w+/)
+["SLV"]
+//tiempo base
+'Master:MST,5ms,0.1ms;'.match(/:(.*)$/ig)[0].split(',')[1].match(/\d+/)
+["5"]
+
+//jitter
+'Master:MST,5ms,2.31ms;'.match(/:(.*)$/ig)[0].split(',')[2].match(/\d+.\d+/)
+["2.31"]
+
+/* Para las señales */
+'RearFogLampInd:1,0,MST,SLV;'.match(/^\w+/gi);
+["RearFogLampInd"]
+'RearFogLampInd:1,0,MST,SLV;'.match(/:(.*)$/i)[1].split(',');
+["1", "0", "MST", "SLV;"]
+```
