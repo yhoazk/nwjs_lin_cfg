@@ -63,10 +63,10 @@ var states = {
 	'unk': 5,
 }
 /* 0: no abierto 1: abirto 2: cerrado */
-var nodes_bracket; = 0;
-var signals_bracket; = 0;
-var frames_bracket; = 0;
-var sched_bracket; = 0;
+var nodes_bracket = 0;
+var signals_bracket = 0;
+var frames_bracket = 0;
+var sched_bracket = 0;
 
 function parseNodes() {
 
@@ -111,16 +111,30 @@ function parseCfgFile(file_raw) {
 					console.log("begining of sched_tables");
 					state = states['sched_tables'];
 				}
+
+
 				switch (state) { //'Master: MST, 5 ms, 0.1 ms;'.match(/:(.*)$/ig);
 					case states['nodes']:
 						console.log('state nodes');
 						if(nodes_bracket === 1){
 							if(line_string.match(/master/i)){
-								sub_mstr = line_string.match
+								sub_mstr = line_string.match(/:(.*)$/ig)[0].split(','); //at this point sub_mstr ==Master:MST,5ms,0.1ms;
+
+								nodes_obj = {
+									node_name: sub_mstr[0].match(/\w+/),
+									time_base: sub_mstr[1].match(/\d+/),
+									jitter: sub_mstr[2].match(/\d+.\d+/)
+								};
 							}
 						}
 						if(nodes_bracket === 0 && line_string === '{'){
 							nodes_bracket = 1;
+						}
+						else if (nodes_bracket === 1) {
+
+							if(line_string === '}') {nodes_bracket = 2;}
+						}else if (nodes_bracket === 2) {
+
 						}
 						break;
 					case states['signals']:
