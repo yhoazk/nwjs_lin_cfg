@@ -114,17 +114,25 @@ function parseCfgFile(file_raw) {
 
 
 				switch (state) { //'Master: MST, 5 ms, 0.1 ms;'.match(/:(.*)$/ig);
-					case states['nodes']:
+					case states['nodes']:////////////////////////////////////////////////
 						console.log('state nodes');
 						if(nodes_bracket === 1){
 							if(line_string.match(/master/i)){
 								sub_mstr = line_string.match(/:(.*)$/ig)[0].split(','); //at this point sub_mstr ==Master:MST,5ms,0.1ms;
 
-								nodes_obj = {
+								nodes_obj[0] = {
 									node_name: sub_mstr[0].match(/\w+/),
 									time_base: sub_mstr[1].match(/\d+/),
 									jitter: sub_mstr[2].match(/\d+.\d+/)
 								};
+							}
+							else if (line_string.match(/slaves/i)) {
+								sub_mstr = line_string.match(/:(.*)$/ig)[0].split(','); //at this point sub_mstr ==Master:MST,5ms,0.1ms;
+								nodes_obj.push({
+									node_name: sub_mstr[0].match(/\w+/)
+									//time_base: sub_mstr[1].match(/\d+/),
+									//jitter: sub_mstr[2].match(/\d+.\d+/)
+								});
 							}
 						}
 						if(nodes_bracket === 0 && line_string === '{'){
@@ -132,21 +140,47 @@ function parseCfgFile(file_raw) {
 						}
 						else if (nodes_bracket === 1) {
 
-							if(line_string === '}') {nodes_bracket = 2;}
+							if(line_string === '}') {
+								nodes_bracket = 2;
+								state = states['initial'];
+							}
 						}else if (nodes_bracket === 2) {
 
 						}
 						break;
-					case states['signals']:
+
+					case states['signals']:///////////////////////////////////////////////
 						console.log('state signals');
+						if(signals_bracket === 1){
+							if(line_string === '}') {
+								signals_bracket = 2;
+								state = states['initial'];
+								continue;
+							 }
+								sub_str = line_string.match(/:(.*)$/i)[1].split(','); //at this point sub_mstr ==Master:MST,5ms,0.1ms;
+								name = line_string.match(/^\w+/gi);
+								signals_obj.push(	{
+											signal_name: name,
+											signal_size: sub_str[0],
+											init_value: sub_str[1],
+											published_by: sub_str[2],
+											suscribed_by:sub_str[3].match(/\w+/gi)[0]
+								});
+						}
+						if(signals_bracket === 0 && line_string === '{'){
+							signals_bracket = 1;
+						}
+
+
+
 						break;
-					case states['frames']:
+					case states['frames']:////////////////////////////////////////////////
 						console.log('state frames');
 						break;
-					case states['sched_tables']:
+					case states['sched_tables']://////////////////////////////////////////
 						console.log('state sched_tables');
 						break;
-					case states['initial']:
+					case states['initial']:///////////////////////////////////////////////
 						console.log('state ink');
 						break;
 					default:

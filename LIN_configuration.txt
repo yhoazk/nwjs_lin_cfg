@@ -8,7 +8,7 @@
 	{
 		RearFogLampInd:1,0,MST,SLV;
 		PositionLampInd:1,0,MST,SLV;
-		FrontFogLampInd:1,0,MST,SLV;
+		FrontFogSlaveLampInd:1,0,MST,SLV;
 		IgnitionKeyPos:3,0,MST,SLV;
 		SLVFuncIllum:4,0,MST,SLV;
 		SLVSymbolIllum:4,0,MST,SLV;
