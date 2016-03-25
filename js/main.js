@@ -1,47 +1,48 @@
 
+
+var gui = require("nw.gui");
 var fs = require('fs');
 var json_cfg;
-
+var editor;
 
 
 
 fs.readFile('./LIN_configuration.txt', 'utf-8', function (error, contents) {
-//    if(error) throw error;
-    // console.log(contents);
-    // console.log(typeof contents);
-    //json_cfg = JSON.parse(contents);
-//    console.log(obj);
-//
+
+   editor = CodeMirror(
+    document.getElementById("output_editor"),
+    {
+      mode: {name: "javascript", json: true },
+      lineNumbers: true,
+      theme: "lesser-dark",
+    });
+    mode = {name: "javascript", json: true};
+    editor.setOption("mode", mode);
     var textArea = document.getElementById("output");
-/***************************************
+    /***************************************
     Load template
-***************************************/
+     ***************************************/
     var templateSrc = document.getElementById( "results-template" ).innerHTML;
     var template = Handlebars.compile(templateSrc);
 
-   var data = {"person":
-    {
-    "name": "Handlebars",
-    "last": "Demo"
-    }
+    var data = {"person":
+     {
+     "name": "Handlebars",
+     "last": "Demo"
+     }
     };
 
     var lincfg = {
         date_gen: "asdasd232"
     }
     textArea.value =  template(data);
+    var outTemplate = template(data);
+    console.log("Type of :" + typeof outTemplate);
+    console.log("Type of :" +  outTemplate.split('\n').length);
+    editor.setValue(template(data));
     parseCfgFile(contents);
-   // document.write(contents);
-/* Templating */
-var title = "Test ok";
-
 });
 
-/**
-
-
-
-*/
 /* Only 1 master multiple slaves*/
 var nodes_obj = [    {
         node_name: '',
