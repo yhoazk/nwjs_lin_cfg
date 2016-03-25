@@ -12,13 +12,12 @@ fs.readFile('./LIN_configuration.txt', 'utf-8', function (error, contents) {
     //json_cfg = JSON.parse(contents);
 //    console.log(obj);
 //
-
+    var textArea = document.getElementById("output");
 /***************************************
     Load template
 ***************************************/
     var templateSrc = document.getElementById( "results-template" ).innerHTML;
     var template = Handlebars.compile(templateSrc);
-    var resultTemplate = document.getElementById("result");
 
    var data = {"person":
     {
@@ -30,7 +29,7 @@ fs.readFile('./LIN_configuration.txt', 'utf-8', function (error, contents) {
     var lincfg = {
         date_gen: "asdasd232"
     }
-    resultTemplate.innerHTML = template(data);
+    textArea.value =  template(data);
     parseCfgFile(contents);
    // document.write(contents);
 /* Templating */

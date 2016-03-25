@@ -2,23 +2,46 @@
 <html>
 <head>
   <title>Lin Configuration tool</title>
+
+<meta name="syntax" content="c">
+<meta name="settings" content="number_lines,use_css,no_foldcolumn,expand_tabs,line_ids,prevent_copy=">
+<meta name="colorscheme" content="moria">
+<style type="text/css">
+<!--
+pre { font-family: monospace; color: #d0d0d0; background-color: #202020; }
+body { font-family: monospace; color: #d0d0d0; background-color: #202020; }
+* { font-size: 1em; }
+.Type { color: #f09479; background-color: #202020; padding-bottom: 1px; }
+.Statement { color: #7ec0ee; background-color: #202020; padding-bottom: 1px; }
+.LineNr { color: #8fa5d1; }
+.Comment { color: #d0d0a0; background-color: #202020; padding-bottom: 1px; }
+.Constant { color: #87df71; background-color: #202020; padding-bottom: 1px; }
+.PreProc { color: #d7a0d7; background-color: #202020; padding-bottom: 1px; }
+-->
+</style>
+
+
 </head>
+
 <body>
     
-<!--  <script  src="../template/cnf_lin.c"></script> -->
-<script id="results-template" type="text/x-handlebars-template">
-    <h2> Welcome: {{person.name}} {{person.last}} </h2>
+<!--  <script  src="../template/testTemplate.hbt"></script> -->
+<script show="false" id="results-template" type="text/x-handlebars-template">
+    /**********************************************/
+    // TEst
+    #include "ertrr"
+    Welcome: {{person.name}} {{person.last}}
 </script>
   <script src="../js/handlebars-latest.js"></script>
   <script src="../js/main.js"></script>
   <div>
     <button id="btn_generate">Generate</button>
-    <textarea></textarea>
+    <textarea id="output"></textarea>
     <input type="file" name="file" id="file">
   </div>
 
 
-    <div id="result" ></div>
+    <div id="result" hide="true"></div>
       <h1>{{title}}</h1>
 
 
