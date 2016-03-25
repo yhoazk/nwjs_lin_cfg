@@ -4,11 +4,25 @@
   <title>Lin Configuration tool</title>
 </head>
 <body>
+    
+<!--  <script  src="../template/cnf_lin.c"></script> -->
+<script id="results-template" type="text/x-handlebars-template">
+    <h2> Welcome: {{person.name}} {{person.last}} </h2>
+</script>
+  <script src="../js/handlebars-latest.js"></script>
   <script src="../js/main.js"></script>
   <div>
     <button id="btn_generate">Generate</button>
     <textarea></textarea>
     <input type="file" name="file" id="file">
   </div>
+
+
+    <div id="result" ></div>
+      <h1>{{title}}</h1>
+
+
+
+
 </body>
 </html>
