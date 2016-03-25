@@ -66,6 +66,7 @@ var states = {
 var nodes_bracket = 0;
 var signals_bracket = 0;
 var frames_bracket = 0;
+var frames_bracket_sub = 0;
 var sched_bracket = 0;
 
 function parseNodes() {
@@ -170,12 +171,52 @@ function parseCfgFile(file_raw) {
 						if(signals_bracket === 0 && line_string === '{'){
 							signals_bracket = 1;
 						}
-
-
-
 						break;
 					case states['frames']:////////////////////////////////////////////////
 						console.log('state frames');
+						if (frames_bracket === 1 && frames_bracket_sub == 0) { // get the name of the frame
+							if(line_string === '{'){
+								frames_bracket_sub  = 1;
+								break;
+							}
+							else if (line_string == '}') {
+								frames_bracket =2; // end of frames
+								break;
+							}
+							frame_name_loc = line_string.match(/^\w+/gi)[0];
+							sub_frame_loc = line_string.match(/:(.*)$/i)[1].split(',')
+							frame_id_loc = sub_frame_loc[0];
+							frame_pub_by_loc = sub_frame_loc[1]; //published_by
+							frame_size_loc = sub_frame_loc[2] || 0; // size of frame if 0 the undef
+
+						} else if (frames_bracket == 1 && frames_bracket_sub == 1) {
+							if(line_string === '}'){
+								frames_bracket_sub  = 2;
+								//insert frame obj
+								frames_obj.push({
+									frame_name: frame_name_loc,
+									frame_id: frame_id_loc,
+									published_by: frame_pub_by_loc,
+									frame_size: frame_size_loc,
+									signals_frms: sub_frame_sigs
+								});
+								sub_frame_sigs = [];
+								frames_bracket_sub = 0;
+								break;
+							}
+							signal = line_string.match(/\w+/gi);
+							sub_frame_sigs.push({
+								signal_name: signal[0],
+								signal_offset: Number(signal[1])
+							});
+
+						}
+
+						if(frames_bracket === 0 && line_string === '{'){
+							frames_bracket = 1;
+							frames_bracket_sub  = 0;
+							sub_frame_sigs = [];
+						}
 						break;
 					case states['sched_tables']://////////////////////////////////////////
 						console.log('state sched_tables');
