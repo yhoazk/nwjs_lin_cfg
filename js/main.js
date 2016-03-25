@@ -68,6 +68,7 @@ var signals_bracket = 0;
 var frames_bracket = 0;
 var frames_bracket_sub = 0;
 var sched_bracket = 0;
+var sched_bracket_sub = 0;
 
 function parseNodes() {
 
@@ -220,6 +221,40 @@ function parseCfgFile(file_raw) {
 						break;
 					case states['sched_tables']://////////////////////////////////////////
 						console.log('state sched_tables');
+						if (sched_bracket === 1 && frames_bracket_sub == 0) { // get the name of the frame
+							if(line_string === '{'){
+								frames_bracket_sub  = 1;
+								break;
+							}
+							else if (line_string == '}') {
+								sched_bracket =2; // end of frames
+								break;
+							}
+							// get the name of the table
+							sched_table_name = line_string;
+						} else if (sched_bracket == 1 && frames_bracket_sub == 1) {
+							if(line_string === '}'){
+								// insert frame
+								sched_table_obj={
+									table_name:sched_table_name,
+									frames:sub_frame_sched
+								};
+								frames_bracket_sub = 0;
+								break;
+							}
+							frame_subStr = line_string.split('delay');
+							sub_frame_sched.push({
+								frame_name_sched: frame_subStr[0],
+								frame_delayms: Number(frame_subStr[1].match(/\d+/gi))
+							});
+						}
+
+
+						if(sched_bracket === 0 && line_string === '{'){
+							sched_bracket = 1;
+							sched_bracket_sub  = 0;
+							sub_frame_sched = [];
+						}
 						break;
 					case states['initial']:///////////////////////////////////////////////
 						console.log('state ink');
