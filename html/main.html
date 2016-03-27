@@ -6,35 +6,52 @@
 </head>
 <body>
 <script show="false" id="results-template" type="text/x-handlebars-template">
-/**********************************************/
-// TEst
-#include "ertrr"
+/****************************************************************************************************/
+/**
+\file       cnf_lin.c
+\brief      Configuration of LIN driver
+\author     Abraham Tezmol
+\version    1.0
+\date       {{lin_cfg.gen_date}}
+*/
+/****************************************************************************************************/
+/*****************************************************************************************************
+* Include files
+*****************************************************************************************************/
+
+/** SCI configuration definitions */
+#include    "cnf_lin.h"
+
 Welcome: {{person.name}} {{person.last}}
+
+/*Test for iterators*/
+{{#each nav}}
+  {{@index}}: {{this.title}}
+{{/each}}
+
+
+{{#each signals}}
+  {{this.var_type}} {{this.signal_name}} = 0x{{@index}};
+{{/each}}
+
 </script>
-  <script src="../cm/lib/codemirror.js"></script>
+<script src="../cm/lib/codemirror.js"></script>
 
 <script src="../cm/mode/css/css.js"></script>
 <script src="../cm/mode/xml/xml.js"></script>
 <script src="../cm/mode/javascript/javascript.js"></script>
-<script src="..*cm/mode/htmlmixed/htmlmixed.js"></script>
+<script src="../cm/mode/htmlmixed/htmlmixed.js"></script>
 
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.ccs">
 <link rel="stylesheet" href="../cm/lib/codemirror.css">
 <link rel="stylesheet" href="../cm/theme/lesser-dark.css">
-
-
-
-  <script src="../js/handlebars-latest.js"></script>
-  <script src="../js/main.js"></script>
-  <div>
-    <button id="btn_generate">Generate</button>
-
-    <div style=" position: absolute;  top: 37px;  bottom: 24px;  left: 50%;  background: #262626;"
-     id="output_editor"></div>
-
-
-    <textarea id="output"></textarea>
-  </div>
-      <h1>{{title}}</h1>
+<script src="../js/handlebars-latest.js"></script>
+<script src="../js/main.js"></script>
+<div>
+  <button id="btn_generate">Generate</button>
+  <div style=" position: absolute;  top: 37px;  bottom: 24px;  left: 50%;  background: #262626;"
+   id="output_editor"></div>
+</div>
+    <h1>{{title}}</h1>
 </body>
 </html>

@@ -18,29 +18,47 @@ fs.readFile('./LIN_configuration.txt', 'utf-8', function (error, contents) {
     });
     mode = {name: "javascript", json: true};
     editor.setOption("mode", mode);
-    var textArea = document.getElementById("output");
+
+    parseCfgFile(contents);
+    parseSignals();
+
     /***************************************
     Load template
      ***************************************/
     var templateSrc = document.getElementById( "results-template" ).innerHTML;
     var template = Handlebars.compile(templateSrc);
+    /*Iterator for UINT8 vars */
+    Handlebars.registerHelper('list_u8', function(context, options) {
+      var ret = "UINT8 ";
+
+      for(var i=0, j=context.length; i<j; i++) {
+        ret = ret  + options.fn(context[i]) + "</li>";
+      }
+
+      return ret + "</ul>";
+    });
+
 
     var data = {"person":
      {
      "name": "Handlebars",
      "last": "Demo"
-     }
+   },
+     "lin_cfg":{
+        "gen_date": "12.1.1524"
+     },
+     signals: signals_obj,
+     nav: [
+       { url: "http://www.yehudakatz.com", title: "Katz Got Your Tongue" },
+       { url: "http://www.sproutcore.com/block", title: "SproutCore Blog" },
+    ]
     };
 
-    var lincfg = {
-        date_gen: "asdasd232"
-    }
-    textArea.value =  template(data);
+
     var outTemplate = template(data);
     console.log("Type of :" + typeof outTemplate);
     console.log("Type of :" +  outTemplate.split('\n').length);
     editor.setValue(template(data));
-    parseCfgFile(contents);
 });
 
 /* Only 1 master multiple slaves*/
@@ -56,7 +74,8 @@ var signals_obj = [    {
             signal_size: '',
             init_value: '',
             published_by:'',
-            suscribed_by:''
+            suscribed_by:'',
+            var_type:''
 }];
 
 var frames_obj = [{
@@ -99,7 +118,15 @@ function parseNodes() {
 }
 
 function parseSignals() {
-
+  for (var i = 0; i < signals_obj.length; i++) {
+    if(signals_obj[i].signal_size <= 8){
+      signals_obj[i].var_type = 'UINT8';
+    }else if(signals_obj[i].signal_size > 8 && signals_obj[i].signal_size <= 16){
+      signals_obj[i].var_type = 'UINT16';
+    }else if(signals_obj[i].signal_size > 16 && signals_obj[i].signal_size <= 32){
+      signals_obj[i].var_type = 'UINT32';
+    }
+  }
 }
 function parseFrames() {
 
