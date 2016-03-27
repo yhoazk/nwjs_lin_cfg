@@ -20,38 +20,27 @@ fs.readFile('./LIN_configuration.txt', 'utf-8', function (error, contents) {
     editor.setOption("mode", mode);
 
     parseCfgFile(contents);
-    parseSignals();
+    /* Remove empty objs */
+    nodes_obj.splice(0,1);
+    signals_obj.splice(0,1);
+    frames_obj.splice(0,1);
+    // sched_table_obj.splice(0,1);
 
+    parseSignals();
+    parseFrames();
     /***************************************
     Load template
      ***************************************/
     var templateSrc = document.getElementById( "results-template" ).innerHTML;
     var template = Handlebars.compile(templateSrc);
     /*Iterator for UINT8 vars */
-    Handlebars.registerHelper('list_u8', function(context, options) {
-      var ret = "UINT8 ";
-
-      for(var i=0, j=context.length; i<j; i++) {
-        ret = ret  + options.fn(context[i]) + "</li>";
-      }
-
-      return ret + "</ul>";
-    });
-
-
-    var data = {"person":
-     {
-     "name": "Handlebars",
-     "last": "Demo"
-   },
+    var date_val = Date();
+    var data = {
      "lin_cfg":{
-        "gen_date": "12.1.1524"
+        "gen_date": date_val
      },
      signals: signals_obj,
-     nav: [
-       { url: "http://www.yehudakatz.com", title: "Katz Got Your Tongue" },
-       { url: "http://www.sproutcore.com/block", title: "SproutCore Blog" },
-    ]
+     frames: frames_obj
     };
 
 
@@ -85,7 +74,9 @@ var frames_obj = [{
         frame_size:'', //optional
         signals_frms:{
             signal_name: '',
-            signal_offset:''
+            signal_offset:'',
+            signal_size: '',
+            signal_type: ''
         }
     }];
 
@@ -129,7 +120,19 @@ function parseSignals() {
   }
 }
 function parseFrames() {
-
+  for (var i = 0; i < frames_obj.length; i++) {
+    for (var j = 0; j < frames_obj[i].signals_frms.length; j++) {
+      console.log(frames_obj[i].signals_frms[j].signal_name);
+      /* get the index of the object with the singnal name  */
+      var index_val = signals_obj.map(function(e) { return e.signal_name; }).indexOf(frames_obj[i].signals_frms[j].signal_name);
+      if (-1 != index_val) {
+        frames_obj[i].signals_frms[j].signal_size = signals_obj[index_val].signal_size;
+        frames_obj[i].signals_frms[j].signal_type = signals_obj[index_val].var_type;
+      } else {
+        console.log("value not found");
+      }
+    }
+  }
 }
 function parseScheduleTable() {
 
