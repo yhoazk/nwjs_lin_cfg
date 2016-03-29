@@ -21,13 +21,17 @@ fs.readFile('./LIN_configuration.txt', 'utf-8', function (error, contents) {
 
     parseCfgFile(contents);
     /* Remove empty objs */
-    nodes_obj.splice(0,1);
     signals_obj.splice(0,1);
     frames_obj.splice(0,1);
     // sched_table_obj.splice(0,1);
 
     parseSignals();
     parseFrames();
+    parseScheduleTable();
+    /* parse tables */
+    /*
+    Formar una tabla con los frames que
+    */
     /***************************************
     Load template
      ***************************************/
@@ -40,7 +44,8 @@ fs.readFile('./LIN_configuration.txt', 'utf-8', function (error, contents) {
         "gen_date": date_val
      },
      signals: signals_obj,
-     frames: frames_obj
+     frames: frames_obj,
+     sched_table: sched_table_obj
     };
 
 
@@ -87,6 +92,16 @@ var sched_table_obj ={
             frame_time:''
     }]
 };
+/* create an instance in the array per publisher */
+var fram_table_obj = [{
+  node_name: '',
+  frames_of_node : [{
+    start_time:'',
+    num_of_bytes:'',
+    calc_pid: ''
+  }],
+  isMaster: false
+}];
 
 var states = {
     'initial': 0,
@@ -108,6 +123,38 @@ function parseNodes() {
 
 }
 
+
+function genericfilter(arr, criteria) {
+return arr.filter(function(obj) {
+  return Object.keys(criteria).every(function(c) {
+    return obj[c] == criteria[c];
+  });
+});
+}
+
+
+function getParity_Lin(id) { // the id is supposed to be in dec at the input
+  p0 = (
+    (id & 1) ^
+    ((id >> 1) & 1) ^
+    ((id >> 2) & 1) ^
+    ((id >> 4) & 1)
+  );
+
+  p1 = ~(
+    ((id >> 1) & 1) ^
+    ((id >> 3) & 1) ^
+    ((id >> 4) & 1) ^
+    ((id >> 5) & 1)
+  );
+
+  parity = (p0 & 1) | ((p1 & 1) << 1);
+  console.log(parity);
+  console.log(parity << 5);
+
+  return ((parity << 6) | id).toString(16);
+}
+
 function parseSignals() {
   for (var i = 0; i < signals_obj.length; i++) {
     if(signals_obj[i].signal_size <= 8){
@@ -121,6 +168,7 @@ function parseSignals() {
 }
 function parseFrames() {
   for (var i = 0; i < frames_obj.length; i++) {
+    var bit_count = 0;
     for (var j = 0; j < frames_obj[i].signals_frms.length; j++) {
       console.log(frames_obj[i].signals_frms[j].signal_name);
       /* get the index of the object with the singnal name  */
@@ -128,14 +176,76 @@ function parseFrames() {
       if (-1 != index_val) {
         frames_obj[i].signals_frms[j].signal_size = signals_obj[index_val].signal_size;
         frames_obj[i].signals_frms[j].signal_type = signals_obj[index_val].var_type;
+        bit_count += Number(signals_obj[index_val].signal_size);
       } else {
-        console.log("value not found");
+        console.log("signal name not found");
       }
     }
+    frames_obj[i].size_bits = bit_count;
   }
 }
+/* Mix the information of hte schedule_tables and Frames
+  schedule_tables only gives the order and timing, all the rest of
+  the information comes from frames_obj
+  Create a new object in which the information is ordered and parsed
+ */
+/*
+1 find publishers
+2 find frames with matching publisher
+3 attache each frame to publishers obj
+3.1 for each frame attach also relevant information
+*/
 function parseScheduleTable() {
+  for (var i = 0; i < frames_obj.length; i++) {
+    var index_val_pub = nodes_obj.map(function(e) { return e.node_name[0]; }).indexOf(frames_obj[i].published_by);
+    if(-1 != index_val_pub){
+      /* Find if this node has already another obj */
+      var already_reg = fram_table_obj.map(function(e) { return e.node_name; }).indexOf(frames_obj[i].published_by);
+      if (-1 == already_reg) {
+        // create node
+        var reg_ex = new RegExp("MST", "i");
+        var isMaster = reg_ex.test(frames_obj[i].published_by);
+        /* Filter the elements in array with property published_by equal to the second arg */
+        var pub_by = [];
+        pub_by = genericfilter(frames_obj, {published_by: frames_obj[i].published_by});
+        /* Obtain the start_time for each fram pub_by i */
+        /* find the name of the frame in  the table */
+        var frames_in_table;
+        var index_of_frame;
+        var this_start_time;
+        var this_frame_len_bits;
+        frames_in_table = sched_table_obj.frames;
 
+        for (var k = 0; k < pub_by.length; k++) {
+          index_of_frame = frames_in_table.map(function(e) { return e.frame_name_sched; }).indexOf(frames_obj[i].frame_name);
+          this_start_time = frames_in_table[index_of_frame].frame_delayms
+          pub_by[k].start_time = this_start_time;
+
+        }
+
+        /* calculate the PID */
+
+        fram_table_obj.push(
+          {
+            node_name: frames_obj[i].published_by,
+            frames_of_node : [{
+              start_time:'',
+              num_of_bytes:'',
+              calc_pid: ''
+            }],
+
+            isMaster: isMaster
+          }
+        );
+      }
+      else {
+        // add frame to node
+      }
+    }
+    else {
+      alert("Frame pusblished by a non registered node");
+    }
+  }
 }
 
 
@@ -322,6 +432,3 @@ function parseCfgFile(file_raw) {
         // }
 
 }
-
-
-//var bnt_gen =

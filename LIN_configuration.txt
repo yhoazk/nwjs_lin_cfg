@@ -22,7 +22,7 @@
 
 	Frames
 	{
-		Frame1:19,MST
+		Frame1:19,MST // el Identifier esta en decimal
 		{
 			RearFogLampInd,0;
 			PositionLampInd,1;

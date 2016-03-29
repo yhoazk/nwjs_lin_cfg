@@ -46,9 +46,31 @@ const tLIN_signal_config {{this.frame_name}}[] =
     {{this.signal_offset}} /* Signal offset in frame */
   },
   {{/each}}
-}
+};
 /* end: {{this.frame_name}} */
 
+{{/each}}
+
+
+/*****************************************************************************************************
+* Definition of  Frames -
+*****************************************************************************************************/
+{{#each frames}}
+const tLIN_frame_config {{this.frame_name}}{{this.published_by}}[] =
+{
+  /* if is the same publisher */
+
+  {
+    &{{this.frame_name}}[0], /* Pointer to LIN signal configuration */
+    {{this.published_by}},
+    LIN_enhanced,
+     /* LIN_startTimeMs */
+    sizeof({{this.frame_name}})/sizeof(tLIN_signal_config),
+    /* Number of data bytes supported by frame */
+     /* Protected Identifier */
+  },
+
+};
 {{/each}}
 
 </script>
