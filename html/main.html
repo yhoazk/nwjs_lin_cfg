@@ -37,7 +37,7 @@
 {{#each frames}}
 
 /* {{this.frame_name}} */
-const tLIN_signal_config {{this.frame_name}}[] =
+const tLIN_signal_config LIN_signals{{this.frame_name}}[] =
 {
   {{#each signals_frms}}
   {
@@ -55,20 +55,29 @@ const tLIN_signal_config {{this.frame_name}}[] =
 /*****************************************************************************************************
 * Definition of  Frames -
 *****************************************************************************************************/
-{{#each frames}}
-const tLIN_frame_config {{this.frame_name}}{{this.published_by}}[] =
+{{#each frames_table}}
+const tLIN_frame_config LIN_frameTable{{this.table_name}}[] =
 {
   /* if is the same publisher */
-
+  {{#each frames_in_node}}
   {
-    &{{this.frame_name}}[0], /* Pointer to LIN signal configuration */
-    {{this.published_by}},
-    LIN_enhanced,
-     /* LIN_startTimeMs */
-    sizeof({{this.frame_name}})/sizeof(tLIN_signal_config),
-    /* Number of data bytes supported by frame */
-     /* Protected Identifier */
+    & LIN_signals{{this.frame_name}}[0], /* Pointer to LIN signal configuration */
+    {{#if this.isMaster_frm}}
+    LIN_masterResponse,
+    {{else}}
+    LIN_slaveResponse,
+    {{/if}}
+    {{#if this.isMaster_frm}}
+    LIN_classic,                /* Classic or enhanced checksum supported */
+    {{else}}
+    LIN_enhanced,               /* Classic or enhanced checksum supported */
+    {{/if}}
+    {{this.start_time}} /* LIN_startTimeMs */
+    sizeof(LIN_signals{{this.frame_name}})/sizeof(tLIN_signal_config),
+    8, /* {{this.num_of_bytes}} actually used  Number of data bytes supported by frame */
+    0x{{this.calc_pid}} /* Protected Identifier */
   },
+  {{/each}}
 
 };
 {{/each}}

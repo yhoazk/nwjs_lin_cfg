@@ -23,11 +23,13 @@ fs.readFile('./LIN_configuration.txt', 'utf-8', function (error, contents) {
     /* Remove empty objs */
     signals_obj.splice(0,1);
     frames_obj.splice(0,1);
+
     // sched_table_obj.splice(0,1);
 
     parseSignals();
     parseFrames();
     parseScheduleTable();
+    frame_table_obj.splice(0,1);
     /* parse tables */
     /*
     Formar una tabla con los frames que
@@ -45,6 +47,7 @@ fs.readFile('./LIN_configuration.txt', 'utf-8', function (error, contents) {
      },
      signals: signals_obj,
      frames: frames_obj,
+     frames_table: frame_table_obj,
      sched_table: sched_table_obj
     };
 
@@ -93,7 +96,7 @@ var sched_table_obj ={
     }]
 };
 /* create an instance in the array per publisher */
-var fram_table_obj = [{
+var frame_table_obj = [{
   node_name: '',
   frames_of_node : [{
     start_time:'',
@@ -133,7 +136,7 @@ return arr.filter(function(obj) {
 }
 
 
-function getParity_Lin(id) { // the id is supposed to be in dec at the input
+function getPID_Lin(id) { // the id is supposed to be in dec at the input
   p0 = (
     (id & 1) ^
     ((id >> 1) & 1) ^
@@ -172,7 +175,7 @@ function parseFrames() {
     for (var j = 0; j < frames_obj[i].signals_frms.length; j++) {
       console.log(frames_obj[i].signals_frms[j].signal_name);
       /* get the index of the object with the singnal name  */
-      var index_val = signals_obj.map(function(e) { return e.signal_name; }).indexOf(frames_obj[i].signals_frms[j].signal_name);
+        var index_val = signals_obj.map(function(e) { return e.signal_name; }).indexOf(frames_obj[i].signals_frms[j].signal_name);
       if (-1 != index_val) {
         frames_obj[i].signals_frms[j].signal_size = signals_obj[index_val].signal_size;
         frames_obj[i].signals_frms[j].signal_type = signals_obj[index_val].var_type;
@@ -200,7 +203,7 @@ function parseScheduleTable() {
     var index_val_pub = nodes_obj.map(function(e) { return e.node_name[0]; }).indexOf(frames_obj[i].published_by);
     if(-1 != index_val_pub){
       /* Find if this node has already another obj */
-      var already_reg = fram_table_obj.map(function(e) { return e.node_name; }).indexOf(frames_obj[i].published_by);
+      var already_reg = frame_table_obj.map(function(e) { return e.table_name; }).indexOf(frames_obj[i].published_by);
       if (-1 == already_reg) {
         // create node
         var reg_ex = new RegExp("MST", "i");
@@ -218,28 +221,36 @@ function parseScheduleTable() {
 
         for (var k = 0; k < pub_by.length; k++) {
           index_of_frame = frames_in_table.map(function(e) { return e.frame_name_sched; }).indexOf(frames_obj[i].frame_name);
-          this_start_time = frames_in_table[index_of_frame].frame_delayms
+          this_start_time = frames_in_table[index_of_frame].frame_delayms;
           pub_by[k].start_time = this_start_time;
-
+          pub_by[k].isMaster_frm = isMaster;
+          pub_by[k].num_of_bytes= Math.ceil(pub_by[k].size_bits / 8);
+          pub_by[k].calc_pid = getPID_Lin(Number(pub_by[k].frame_id));
         }
 
-        /* calculate the PID */
 
-        fram_table_obj.push(
-          {
-            node_name: frames_obj[i].published_by,
-            frames_of_node : [{
-              start_time:'',
-              num_of_bytes:'',
-              calc_pid: ''
-            }],
+          /* calculate the PID */
 
-            isMaster: isMaster
-          }
-        );
+          frame_table_obj.push(
+            {
+              table_name: frames_obj[i].published_by,
+              frames_in_node: pub_by,
+              /*
+              frames_of_node : [{
+                isMaster_frm: isMaster,
+                signals_cfg_name: "LIN_signals" + pub_by[k].frame_name,
+                start_time:this_start_time,
+                num_of_bytes: Math.ceil(pub_by[k].size_bits / 8),
+                calc_pid: getPID_Lin(Number(pub_by[k].frame_id))
+              }],
+              */
+              isMaster: isMaster
+            });
+
       }
       else {
         // add frame to node
+        console.log("node already parsed");
       }
     }
     else {
