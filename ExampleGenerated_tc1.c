@@ -5,7 +5,7 @@
 \brief      Configuration of LIN driver
 \author     Abraham Tezmol
 \version    1.0
-\date       Thu Mar 31 2016 23:49:16 GMT-0600 (CST)
+\date       Fri Apr 01 2016 00:21:55 GMT-0600 (CST)
 */
 /****************************************************************************************************/
 /*****************************************************************************************************
@@ -31,6 +31,9 @@
   UINT16 FanIdealSpeed = 0x9;
   UINT16 FanMeasSpeed = 0x10;
   UINT16 WaterTemp = 0x11;
+  UINT16 SlaveMaster_Ack = 0x12;
+  UINT16 SlaveMaster1_Ack = 0x13;
+  UINT16 SlaveMaster2_Ack = 0x14;
 
 /*****************************************************************************************************
 * Definition of module wide (CONST-) CONSTANTs
@@ -118,6 +121,28 @@ const tLIN_signal_config LIN_signalsFrame3[] =
 /* end: LIN_signalsFrame3 */
 
 
+/* Frame4 */
+const tLIN_signal_config LIN_signalsFrame4[] =
+{
+  {
+    (UINT8 *)&SlaveMaster_Ack, /* Pointer to LIN signal data Signal Name UINT16 */
+    16, /* Signal size in bytes  */
+    0 /* Signal offset in frame */
+  },
+  {
+    (UINT8 *)&SlaveMaster1_Ack, /* Pointer to LIN signal data Signal Name UINT16 */
+    16, /* Signal size in bytes  */
+    16 /* Signal offset in frame */
+  },
+  {
+    (UINT8 *)&SlaveMaster2_Ack, /* Pointer to LIN signal data Signal Name UINT16 */
+    16, /* Signal size in bytes  */
+    32 /* Signal offset in frame */
+  },
+};
+/* end: LIN_signalsFrame4 */
+
+
 
 /*****************************************************************************************************
 * Definition of  Frames -
@@ -157,6 +182,15 @@ const tLIN_frame_config LIN_frameTableSLV[] =
     sizeof(LIN_signalsFrame3)/sizeof(tLIN_signal_config),
     8, /* 6 actually used  Number of data bytes supported by frame */
     0xfb /* Protected Identifier */
+  },
+  {
+    & LIN_signalsFrame4[0], /* Pointer to LIN signal configuration */
+    LIN_slaveResponse,
+    LIN_enhanced,               /* Classic or enhanced checksum supported */
+    25 /* LIN_startTimeMs */
+    sizeof(LIN_signalsFrame4)/sizeof(tLIN_signal_config),
+    8, /* 6 actually used  Number of data bytes supported by frame */
+    0x78 /* Protected Identifier */
   },
 
 };

@@ -41,13 +41,13 @@ const tLIN_signal_config LIN_signals{{this.frame_name}}[] =
 {
   {{#each signals_frms}}
   {
-    ( {{this.signal_type}}*)&{{this.signal_name}}, /* Signal Name */
-    {{this.signal_size}}, /* Signal size in bytes TODO */
+    (UINT8 *)&{{this.signal_name}}, /* Pointer to LIN signal data Signal Name {{this.signal_type}} */
+    {{this.signal_size}}, /* Signal size in bytes  */
     {{this.signal_offset}} /* Signal offset in frame */
   },
   {{/each}}
 };
-/* end: {{this.frame_name}} */
+/* end: LIN_signals{{this.frame_name}} */
 
 {{/each}}
 
@@ -80,6 +80,7 @@ const tLIN_frame_config LIN_frameTable{{this.table_name}}[] =
   {{/each}}
 
 };
+
 {{/each}}
 
 /*******************************************************************************/

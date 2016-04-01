@@ -7,7 +7,7 @@ var editor;
 
 
 
-fs.readFile('./LIN_configuration.txt', 'utf-8', function (error, contents) {
+fs.readFile('./LIN_configuration_tc1.txt', 'utf-8', function (error, contents) {
 
    editor = CodeMirror(
     document.getElementById("output_editor"),

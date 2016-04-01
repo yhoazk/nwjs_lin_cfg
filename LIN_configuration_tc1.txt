@@ -1,0 +1,66 @@
+	Nodes
+	{
+		Master: MST, 5 ms, 0.1 ms;
+		Slaves: SLV
+	}
+
+	Signals
+	{
+		RearFogLampInd:1,0,MST,SLV;
+		PositionLampInd:1,0,MST,SLV;
+		FrontFogLampInd:1,0,MST,SLV;
+		IgnitionKeyPos:3,0,MST,SLV;
+		SLVFuncIllum:4,0,MST,SLV;
+		SLVSymbolIllum:4,0,MST,SLV;
+		SLVSWPartNo:8,0,SLV,MST;
+		SLVHWPartNoB0:12,0,SLV,MST;
+		SLVHWPartNoB1:12,0,SLV,MST;
+		FanIdealSpeed:16,0, SLV,MST;
+		FanMeasSpeed:16,0, SLV,MST;
+		WaterTemp:16,0,SLV,MST;
+		SlaveMaster_Ack:16,0,SLV,MST;
+		SlaveMaster1_Ack:16,0,SLV,MST;
+		SlaveMaster2_Ack:16,0,SLV,MST;
+	}
+
+	Frames
+	{
+		Frame1:19,MST
+		{
+			RearFogLampInd,0;
+			PositionLampInd,1;
+			FrontFogLampInd,2;
+			IgnitionKeyPos,3;
+			SLVFuncIllum,8;
+			SLVSymbolIllum,12;
+		}
+		Frame2:34,SLV
+		{
+			SLVSWPartNo,0;
+			SLVHWPartNoB0,8;
+			SLVHWPartNoB1,24;
+		}
+		Frame3:59,SLV
+		{
+			FanIdealSpeed,0;
+			FanMeasSpeed,16;
+			WaterTemp,32;
+		}
+		Frame4:56,SLV
+		{
+			SlaveMaster_Ack,0;
+			SlaveMaster1_Ack,16;
+			SlaveMaster2_Ack,32;
+		}
+	}
+
+	Schedule_tables
+	{
+		SCH_TBL1
+		{
+			Frame1 delay 15 ms;
+			Frame2 delay 25 ms;
+			Frame3 delay 40 ms;
+			Frame4 delay 50 ms;
+		}
+	}
