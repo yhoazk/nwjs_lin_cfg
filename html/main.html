@@ -82,6 +82,70 @@ const tLIN_frame_config LIN_frameTable{{this.table_name}}[] =
 };
 {{/each}}
 
+/*******************************************************************************/
+
+#ifdef LIN_MODE_{{frames_table.[0].table_name}}
+const tLIN_table_config LIN_table{{frames_table.[0].table_name}} =
+{
+    &LIN_frameTable{{frames_table.[0].table_name}}[0],            /* Pointer to supported pusblisher frame table */
+    &LIN_frameTable{{frames_table.[1].table_name}}[0],            /* Pointer to supported suscriber frame table */
+    200,                                /* Table total time in ms */
+    sizeof(LIN_frameTable{{frames_table.[0].table_name}})/sizeof(tLIN_frame_config),    /* Size of the publisher frame configuration table */
+    sizeof(LIN_frameTable{{frames_table.[1].table_name}})/sizeof(tLIN_frame_config),    /* Size of the suscriber frame configuration table */
+      5                                 /* Master table resolution in ms */
+};
+
+const tLIN_channel_config LIN_channelMaster =
+{
+    &LIN_table{{frames_table.[0].table_name}},                /* Pointer to LIN configuration table */
+    (tCallbackFunction*)NULL,        /* Pointer to function to be callled upon Wake Up */
+    (UINT32)19200,                    /* LIN Baudrate*/
+    LIN_0,                            /* LIN Channel ID */
+    SCI_CH0,                        /* Low leverl drier SCI channel assigned */
+    LIN_master                         /* Master or Slave */
+};
+
+const tLIN_driver_config LIN_driverMaster =
+{
+    &LIN_channelMaster              /* Pointer to LIN channels configuration */
+};
+
+#endif /* LIN_MODE_{{frames_table.[0].table_name}} */
+
+
+#ifdef LIN_MODE_{{frames_table.[1].table_name}}
+const tLIN_table_config LIN_table{{frames_table.[1].table_name}} =
+{
+    &LIN_frameTable{{frames_table.[1].table_name}}[0],            /* Pointer to supported pusblisher frame table */
+    &LIN_frameTable{{frames_table.[0].table_name}}[0],            /* Pointer to supported suscriber frame table */
+    200,                                /* Table total time in ms */
+    sizeof(LIN_frameTable{{frames_table.[1].table_name}})/sizeof(tLIN_frame_config),    /* Size of the publisher frame configuration table */
+    sizeof(LIN_frameTable{{frames_table.[0].table_name}})/sizeof(tLIN_frame_config),    /* Size of the suscriber frame configuration table */
+    5                                 /* Master table resolution in ms */
+};
+
+const tLIN_channel_config LIN_channelSlave =
+{
+    &LIN_table{{frames_table.[1].table_name}},                /* Pointer to LIN configuration table */
+    (tCallbackFunction*)NULL,        /* Pointer to function to be callled upon Wake Up */
+    (UINT32)19200,                    /* LIN Baudrate*/
+    LIN_0,                            /* LIN Channel ID */
+    SCI_CH0,                        /* Low leverl drier SCI channel assigned */
+    LIN_slav                         /* Master or Slave */
+};
+
+const tLIN_driver_config LIN_driverSlave =
+{
+    &LIN_channelSlave              /* Pointer to LIN channels configuration */
+};
+
+#endif /* LIN_MODE_{{this.table_name.[0]}} */
+
+/*****************************************************************************************************
+* Code of module wide private FUNCTIONS
+*****************************************************************************************************/
+
+
 </script>
 <script src="../cm/lib/codemirror.js"></script>
 
@@ -100,6 +164,6 @@ const tLIN_frame_config LIN_frameTable{{this.table_name}}[] =
   <div style=" position: absolute;  top: 37px;  bottom: 24px;  left: 50%;  background: #262626;"
    id="output_editor"></div>
 </div>
-    <h1>{{title}}</h1>
+
 </body>
 </html>
