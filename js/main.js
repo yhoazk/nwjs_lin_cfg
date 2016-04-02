@@ -5,11 +5,13 @@ var fs = require('fs');
 var json_cfg;
 var editor;
 var fileEntry;
-
+var reload;
 var save_as;
 
 //Same as $(document).ready();
 function ready(fn) {
+  console.log("On ready");
+
     if (document.readyState != 'loading'){
       fn();
     } else {
@@ -22,7 +24,7 @@ function ready(fn) {
 
 
 onload = function(){
-    console.log("");
+    console.log("On load");
 }
 
 
@@ -61,7 +63,11 @@ function handleSaveAsButton() {
 //When the page has loaded, run this code
 ready(function(){
 
-
+    console.log("ready");
+    reload = document.getElementById("btn_restart");
+    reload.addEventListener("click", function() {
+        Window.reload();
+    });
     save_as = document.getElementById("btn_saveAs");
 
     save_as.addEventListener("click", handleSaveAsButton);
@@ -305,7 +311,7 @@ function parseScheduleTable() {
         frames_in_table = sched_table_obj.frames;
 
         for (var k = 0; k < pub_by.length; k++) {
-          index_of_frame = frames_in_table.map(function(e) { return e.frame_name_sched; }).indexOf(frames_obj[i].frame_name);
+          index_of_frame = frames_in_table.map(function(e) { return e.frame_name_sched; }).indexOf(pub_by[k].frame_name);
           this_start_time = frames_in_table[index_of_frame].frame_delayms;
           pub_by[k].start_time = this_start_time;
           pub_by[k].isMaster_frm = isMaster;

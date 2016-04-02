@@ -18,11 +18,23 @@
 		FanIdealSpeed:16,0, SLV,MST;
 		FanMeasSpeed:16,0, SLV,MST;
 		WaterTemp:16,0,SLV,MST;
+		sign_16b_01:16,0,SLV,MST;
+		sign_16b_02:16,0,SLV,MST;
+		sign_16b_03:16,0,SLV,MST;
+		sign_16b_04:16,0,SLV,MST;
+		sign_16b_05:16,0,SLV,MST;
+		sign_16b_06:16,0,SLV,MST;
+		sign_16b_07:16,0,SLV,MST;
+		sign_16b_08:16,0,SLV,MST;
+		sign_16b_09:16,0,SLV,MST;
+		sign_16b_10:16,0,SLV,MST;
+		sign_16b_11:16,0,SLV,MST;
+		sign_16b_12:16,0,SLV,MST;
 	}
 
 	Frames
 	{
-		Frame1:19,MST 
+		EnvioDatos:15,MST
 		{
 			RearFogLampInd,0;
 			PositionLampInd,1;
@@ -31,17 +43,45 @@
 			SLVFuncIllum,8;
 			SLVSymbolIllum,12;
 		}
-		Frame2:34,SLV
+		Ack_slv:34,SLV
 		{
 			SLVSWPartNo,0;
 			SLVHWPartNoB0,8;
 			SLVHWPartNoB1,24;
 		}
-		Frame3:59,SLV
+		data_respose:49,SLV
 		{
 			FanIdealSpeed,0;
 			FanMeasSpeed,16;
 			WaterTemp,32;
+		}
+
+		data_req1:50,SLV
+		{
+			sign_16b_01,0;
+			sign_16b_02,16;
+			sign_16b_03,32;
+		}
+
+		data_req2:51,SLV
+		{
+			sign_16b_04,0;
+			sign_16b_05,16;
+			sign_16b_06,32;
+		}
+
+		acq_timer:52,SLV
+		{
+			sign_16b_07,0;
+			sign_16b_08,16;
+			sign_16b_09,32;
+		}
+
+		acq_time_mst:53,SLV
+		{
+			sign_16b_10,0;
+			sign_16b_11,16;
+			sign_16b_12,32;
 		}
 	}
 
@@ -49,8 +89,12 @@
 	{
 		SCH_TBL1
 		{
-			Frame1 delay 15 ms;
-			Frame2 delay 25 ms;
-			Frame3 delay 40 ms;
+			EnvioDatos delay 10 ms;
+			Ack_slv delay 25 ms;
+			data_respose delay 40  ms;
+			data_req1 delay 55 ms;
+			data_req2 delay 70 ms;
+			acq_timer delay 85 ms;
+			acq_time_mst delay 100 ms;
 		}
 	}
