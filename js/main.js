@@ -44,9 +44,6 @@ function writeEditorToFile() {
         console.log("Write failed: " + err);
         return;
       }
-
-      console.log("Write completed.");
-      alert("File written: generated/cnf_lin.c");
     });
 
     fs.writeFile("./generated/cnf_lin.h", h_file, function (err) {
@@ -56,7 +53,7 @@ function writeEditorToFile() {
       }
 
       console.log("Write completed.");
-      alert("File written: generated/cnf_lin.h");
+      alert("File written: generated/cnf_lin.c and cnf_lin.h");
     });
   }
 

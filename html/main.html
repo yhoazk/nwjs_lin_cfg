@@ -50,9 +50,45 @@
   padding: 20px;
 }
 
+.myButton {
+	-moz-box-shadow:inset 0px 34px 0px -15px #b54b3a;
+	-webkit-box-shadow:inset 0px 34px 0px -15px #b54b3a;
+	box-shadow:inset 0px 34px 0px -15px #b54b3a;
+	background-color:#a73f2d;
+	border:1px solid #241d13;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:15px;
+	font-weight:bold;
+	padding:9px 23px;
+	text-decoration:none;
+	text-shadow:0px -1px 0px #7a2a1d;
+}
+.myButton:hover {
+	background-color:#b34332;
+}
+.myButton:active {
+	position:relative;
+	top:1px;
+}
+
+
   .info label {
     font-weight: bold;
   }
+
+  button {
+  margin: 0;
+}
+.buttons {
+  font-family: monospace;
+  padding: 2px;
+  height: 25px;
+  color: white;
+  background-color: gray;
+}
 
   </style>
 
@@ -173,7 +209,7 @@
   {{#each signals}}
   extern  {{this.var_type}} {{this.signal_name}};
   {{/each}}
-  
+
   #ifdef LIN_NODE_MASTER
       extern const tLIN_driver_config LIN_driverMaster;
   #endif
@@ -348,9 +384,10 @@ const tLIN_driver_config LIN_driverSlave =
 <script src="../js/handlebars-latest.js"></script>
 <script src="../js/main.js"></script>
 <div>
-  <button id="btn_restart">re-cargar</button>
-  <br>
-  <button id="btn_close">cerrar</button>
+
+  <button class="myButton" id="btn_restart">re-cargar</button>
+
+  <button class="myButton" id="btn_close">cerrar</button>
 
   <div style="" id="holder">
       <label id="drop_area">
