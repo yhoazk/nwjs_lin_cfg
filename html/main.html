@@ -75,6 +75,8 @@
 /** SCI configuration definitions */
 #include    "cnf_lin.h"
 
+#define LIN_NODE_MST LIN_NODE_MASTER
+#define LIN_NODE_SLV LIN_NODE_SLAVE
 
 /*****************************************************************************************************
 * Definition of  VARIABLEs -
@@ -125,7 +127,7 @@ const tLIN_frame_config LIN_frameTable{{this.table_name}}[] =
     {{else}}
     LIN_enhanced,               /* Classic or enhanced checksum supported */
     {{/if}}
-    {{this.start_time}} /* LIN_startTimeMs */
+    {{this.start_time}}, /* LIN_startTimeMs */
     sizeof(LIN_signals{{this.frame_name}})/sizeof(tLIN_signal_config),
     8, /* {{this.num_of_bytes}} actually used  Number of data bytes supported by frame */
     0x{{this.calc_pid}} /* Protected Identifier */
