@@ -75,8 +75,7 @@
 /** SCI configuration definitions */
 #include    "cnf_lin.h"
 
-#define LIN_NODE_MST LIN_NODE_MASTER
-#define LIN_NODE_SLV LIN_NODE_SLAVE
+
 
 /*****************************************************************************************************
 * Definition of  VARIABLEs -
@@ -140,7 +139,7 @@ const tLIN_frame_config LIN_frameTable{{this.table_name}}[] =
 
 /*******************************************************************************/
 
-#ifdef LIN_MODE_{{frames_table.[0].table_name}}
+#ifdef LIN_NODE_MASTER
 const tLIN_table_config LIN_table{{frames_table.[0].table_name}} =
 {
     &LIN_frameTable{{frames_table.[0].table_name}}[0],            /* Pointer to supported pusblisher frame table */
@@ -166,10 +165,10 @@ const tLIN_driver_config LIN_driverMaster =
     &LIN_channelMaster              /* Pointer to LIN channels configuration */
 };
 
-#endif /* LIN_MODE_{{frames_table.[0].table_name}} */
+#endif /* LIN_MODE_MASTER */
 
 
-#ifdef LIN_MODE_{{frames_table.[1].table_name}}
+#ifdef LIN_NODE_SLAVE
 const tLIN_table_config LIN_table{{frames_table.[1].table_name}} =
 {
     &LIN_frameTable{{frames_table.[1].table_name}}[0],            /* Pointer to supported pusblisher frame table */
@@ -195,7 +194,7 @@ const tLIN_driver_config LIN_driverSlave =
     &LIN_channelSlave              /* Pointer to LIN channels configuration */
 };
 
-#endif /* LIN_MODE_{{frames_table.[1].table_name}} */
+#endif /* LIN_MODE_SLAVE */
 
 /*****************************************************************************************************
 * Code of module wide private FUNCTIONS
@@ -218,7 +217,9 @@ const tLIN_driver_config LIN_driverSlave =
 <script src="../js/handlebars-latest.js"></script>
 <script src="../js/main.js"></script>
 <div>
-  <button id="btn_restart" hidden="true">reinicar</button>
+  <button id="btn_restart">re-cargar</button>
+  <br>
+  <button id="btn_close">cerrar</button>
 
   <div style="" id="holder">
       <label id="drop_area">

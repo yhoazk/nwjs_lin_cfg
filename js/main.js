@@ -1,11 +1,13 @@
 
 
 var gui = require("nw.gui");
+var win = gui.Window.get();
 var fs = require('fs');
 var json_cfg;
 var editor;
 var fileEntry;
 var reload;
+var close_btn;
 var save_as;
 
 //Same as $(document).ready();
@@ -66,8 +68,15 @@ ready(function(){
     console.log("ready");
     reload = document.getElementById("btn_restart");
     reload.addEventListener("click", function() {
-        Window.reload();
+        win.reload();
     });
+    close_btn
+
+    close_btn = document.getElementById("btn_close");
+    close_btn.addEventListener("click", function() {
+        win.close();
+    });
+
     save_as = document.getElementById("btn_saveAs");
 
     save_as.addEventListener("click", handleSaveAsButton);

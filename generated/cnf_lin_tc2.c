@@ -5,7 +5,7 @@
 \brief      Configuration of LIN driver
 \author     Abraham Tezmol
 \version    1.0
-\date       Fri Apr 01 2016 22:29:28 GMT-0600 (CST)
+\date       Sat Apr 02 2016 01:45:29 GMT-0600 (CST)
 */
 /****************************************************************************************************/
 /*****************************************************************************************************
@@ -14,6 +14,7 @@
 
 /** SCI configuration definitions */
 #include    "cnf_lin.h"
+
 
 
 /*****************************************************************************************************
@@ -104,7 +105,7 @@ const tLIN_frame_config LIN_frameTableMST[] =
     & LIN_signalsFrame1[0], /* Pointer to LIN signal configuration */
     LIN_masterResponse,
     LIN_classic,                /* Classic or enhanced checksum supported */
-    15 /* LIN_startTimeMs */
+    15, /* LIN_startTimeMs */
     sizeof(LIN_signalsFrame1)/sizeof(tLIN_signal_config),
     8, /* 2 actually used  Number of data bytes supported by frame */
     0xd3 /* Protected Identifier */
@@ -119,7 +120,7 @@ const tLIN_frame_config LIN_frameTableSLV[] =
     & LIN_signalsFrame2[0], /* Pointer to LIN signal configuration */
     LIN_slaveResponse,
     LIN_enhanced,               /* Classic or enhanced checksum supported */
-    25 /* LIN_startTimeMs */
+    25, /* LIN_startTimeMs */
     sizeof(LIN_signalsFrame2)/sizeof(tLIN_signal_config),
     8, /* 4 actually used  Number of data bytes supported by frame */
     0xe2 /* Protected Identifier */
@@ -130,7 +131,7 @@ const tLIN_frame_config LIN_frameTableSLV[] =
 
 /*******************************************************************************/
 
-#ifdef LIN_MODE_MST
+#ifdef LIN_NODE_MASTER
 const tLIN_table_config LIN_tableMST =
 {
     &LIN_frameTableMST[0],            /* Pointer to supported pusblisher frame table */
@@ -156,10 +157,10 @@ const tLIN_driver_config LIN_driverMaster =
     &LIN_channelMaster              /* Pointer to LIN channels configuration */
 };
 
-#endif /* LIN_MODE_MST */
+#endif /* LIN_MODE_MASTER */
 
 
-#ifdef LIN_MODE_SLV
+#ifdef LIN_NODE_SLAVE
 const tLIN_table_config LIN_tableSLV =
 {
     &LIN_frameTableSLV[0],            /* Pointer to supported pusblisher frame table */
@@ -185,7 +186,7 @@ const tLIN_driver_config LIN_driverSlave =
     &LIN_channelSlave              /* Pointer to LIN channels configuration */
 };
 
-#endif /* LIN_MODE_SLV */
+#endif /* LIN_MODE_SLAVE */
 
 /*****************************************************************************************************
 * Code of module wide private FUNCTIONS
