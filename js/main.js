@@ -4,10 +4,91 @@ var gui = require("nw.gui");
 var fs = require('fs');
 var json_cfg;
 var editor;
+var fileEntry;
+
+var save_as;
+
+//Same as $(document).ready();
+function ready(fn) {
+    if (document.readyState != 'loading'){
+      fn();
+    } else {
+      document.addEventListener('DOMContentLoaded', fn);
+    }
+}
 
 
 
-fs.readFile('./LIN_configuration_tc1.txt', 'utf-8', function (error, contents) {
+
+
+onload = function(){
+    console.log("");
+}
+
+
+function writeEditorToFile() {
+  if (editor == undefined || editor == null) {
+    alert("arrastra el archivo dentro de la linea punteada");
+  } else {
+
+    var str = editor.getValue();
+    var blob = new Blob([str], {type: "text/plain;charset=utf-8"});
+
+    fs.writeFile("./generated/cnf_lin.c", editor.getValue(), function (err) {
+      if (err) {
+        console.log("Write failed: " + err);
+        return;
+      }
+
+      console.log("Write completed.");
+      alert("File written: generated/cnf_lin.c");
+    });
+  }
+
+}
+
+var onChosenFileToSave = function(theFileEntry) {
+  setFile(theFileEntry, true);
+  writeEditorToFile(theFileEntry);
+};
+
+
+
+function handleSaveAsButton() {
+    writeEditorToFile(fileEntry);
+}
+
+//When the page has loaded, run this code
+ready(function(){
+
+
+    save_as = document.getElementById("btn_saveAs");
+
+    save_as.addEventListener("click", handleSaveAsButton);
+    // prevent default behavior from changing page on dropped file
+    window.ondragover = function(e) { e.preventDefault(); return false };
+    // NOTE: ondrop events WILL NOT WORK if you do not "preventDefault" in the ondragover event!!
+    window.ondrop = function(e) { e.preventDefault(); return false };
+
+    var holder = document.getElementById('holder');
+    holder.ondragover = function () { this.className = 'hover'; return false; };
+    holder.ondragleave = function () { this.className = ''; return false; };
+    holder.ondrop = function (e) {
+      e.preventDefault();
+
+      for (var i = 0; i < e.dataTransfer.files.length; ++i) {
+        console.log(e.dataTransfer.files[i].path);
+      }
+        main(e.dataTransfer.files[0].path);
+        setTimeout(function(){ writeEditorToFile(); }, 500);
+
+      return false;
+    };
+});
+
+
+function main( filepath ) {
+fs.readFile(filepath, 'utf-8', function (error, contents) {
 
    editor = CodeMirror(
     document.getElementById("output_editor"),
@@ -16,6 +97,7 @@ fs.readFile('./LIN_configuration_tc1.txt', 'utf-8', function (error, contents) {
       lineNumbers: true,
       theme: "lesser-dark",
     });
+
     mode = {name: "javascript", json: true};
     editor.setOption("mode", mode);
 
@@ -58,6 +140,8 @@ fs.readFile('./LIN_configuration_tc1.txt', 'utf-8', function (error, contents) {
     editor.setValue(template(data));
 });
 
+}
+
 /* Only 1 master multiple slaves*/
 var nodes_obj = [    {
         node_name: '',
@@ -69,10 +153,10 @@ var nodes_obj = [    {
 var signals_obj = [    {
             signal_name: '',
             signal_size: '',
-            init_value: '',
+            init_value:  '',
             published_by:'',
             suscribed_by:'',
-            var_type:''
+            var_type:    ''
 }];
 
 var frames_obj = [{
@@ -95,6 +179,7 @@ var sched_table_obj ={
             frame_time:''
     }]
 };
+
 /* create an instance in the array per publisher */
 var frame_table_obj = [{
   node_name: '',

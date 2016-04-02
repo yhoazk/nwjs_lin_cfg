@@ -2,6 +2,59 @@
 <html>
 <head>
   <title>Lin Configuration tool</title>
+  <style media="screen">
+
+  #editor {
+    width: 100%;
+    background: #262626;
+  }
+  #holder {
+   border: 10px dashed #ccc;
+   width: 300px;
+   height: 300px;
+     margin: 20px auto;}
+
+  #holder.hover {
+  border: 10px dashed #333;
+  }
+
+  .left
+  {
+    width: 50%;
+    float: left;
+  }
+
+  body {
+      background-color: black;
+  }
+
+  .info {
+    font-family: monospace;
+    white-space: nowrap;
+    position: absolute;
+    bottom: 0;
+    background: #eee;
+    padding: 2px;
+    height: 20px;
+    left: 0;
+    right: 0;
+  }
+
+#drop_area{
+  font-family: monospace;
+  white-space: nowrap;
+  padding: 2px;
+  height: 20px;
+  color: white;
+  margin: 20px;
+  padding: 20px;
+}
+
+  .info label {
+    font-weight: bold;
+  }
+
+  </style>
 
 </head>
 <body>
@@ -140,7 +193,7 @@ const tLIN_driver_config LIN_driverSlave =
     &LIN_channelSlave              /* Pointer to LIN channels configuration */
 };
 
-#endif /* LIN_MODE_{{this.table_name.[0]}} */
+#endif /* LIN_MODE_{{frames_table.[1].table_name}} */
 
 /*****************************************************************************************************
 * Code of module wide private FUNCTIONS
@@ -155,15 +208,22 @@ const tLIN_driver_config LIN_driverSlave =
 <script src="../cm/mode/javascript/javascript.js"></script>
 <script src="../cm/mode/htmlmixed/htmlmixed.js"></script>
 
-<link rel="stylesheet" href="style.ccs">
+
+
+<link rel="stylesheet" href="./style.ccs">
 <link rel="stylesheet" href="../cm/lib/codemirror.css">
 <link rel="stylesheet" href="../cm/theme/lesser-dark.css">
 <script src="../js/handlebars-latest.js"></script>
 <script src="../js/main.js"></script>
 <div>
-  <button id="btn_generate">Generate</button>
-  <div style=" position: absolute;  top: 37px;  bottom: 24px;  left: 50%;  background: #262626;"
-   id="output_editor"></div>
+
+  <div style="" id="holder">
+      <label id="drop_area">
+      Drop configuration file here
+      </label>
+  </div>
+  <button id="btn_saveAs" hidden="true">Guardar como</button>
+  <div id="output_editor"></div>
 </div>
 
 </body>

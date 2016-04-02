@@ -3,7 +3,9 @@
   "name": "Lin Configuration tool",
   "window":{
     "toolbar": true,
-    "width": 800,
-    "height": 500
+    "width": 640,
+    "height": 1240,
+    "resizable": false,
+    "frame": false
   }
 }

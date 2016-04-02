@@ -20,30 +20,24 @@ button {
   overflow-x: auto;
 }
 
-#editor {
-  position: absolute;
-  top: 37px;
-  bottom: 24px;
-  left: 0;
-  right: 0;
-  background: #262626;
+
+
+
+#holder {
+ border: 10px dashed #ccc;
+ width: 300px;
+ height: 300px;
+   margin: 20px auto;
+  }
+
+#holder.hover {
+border: 10px dashed #333;
 }
 
-.info {
-  font-family: monospace;
-  white-space: nowrap;
-  position: absolute;
-  bottom: 0;
-  background: #eee;
-  padding: 2px;
-  height: 20px;
-  left: 0;
-  right: 0;
-}
 
-.info label {
-  font-weight: bold;
-}
+
+
+
 
 .buttons {
   padding: 2px;
