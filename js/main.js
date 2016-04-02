@@ -9,7 +9,7 @@ var fileEntry;
 var reload;
 var close_btn;
 var save_as;
-
+var h_file;
 //Same as $(document).ready();
 function ready(fn) {
   console.log("On ready");
@@ -37,6 +37,7 @@ function writeEditorToFile() {
 
     var str = editor.getValue();
     var blob = new Blob([str], {type: "text/plain;charset=utf-8"});
+    var blob_h = new Blob([h_file], {type: "text/plain;charset=utf-8"});
 
     fs.writeFile("./generated/cnf_lin.c", editor.getValue(), function (err) {
       if (err) {
@@ -46,6 +47,16 @@ function writeEditorToFile() {
 
       console.log("Write completed.");
       alert("File written: generated/cnf_lin.c");
+    });
+
+    fs.writeFile("./generated/cnf_lin.h", h_file, function (err) {
+      if (err) {
+        console.log("Write failed: " + err);
+        return;
+      }
+
+      console.log("Write completed.");
+      alert("File written: generated/cnf_lin.h");
     });
   }
 
@@ -135,7 +146,9 @@ fs.readFile(filepath, 'utf-8', function (error, contents) {
     Load template
      ***************************************/
     var templateSrc = document.getElementById( "results-template" ).innerHTML;
+    var templateSrc_h = document.getElementById( "results-h-template" ).innerHTML;
     var template = Handlebars.compile(templateSrc);
+    var template_h = Handlebars.compile(templateSrc_h);
     /*Iterator for UINT8 vars */
     var date_val = Date();
     var data = {
@@ -150,6 +163,8 @@ fs.readFile(filepath, 'utf-8', function (error, contents) {
 
 
     var outTemplate = template(data);
+    h_file = template_h(data);
+
     console.log("Type of :" + typeof outTemplate);
     console.log("Type of :" +  outTemplate.split('\n').length);
     editor.setValue(template(data));
